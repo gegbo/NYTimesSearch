@@ -2,16 +2,21 @@ package com.example.gegbo.nytimessearch.Activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.SearchView;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridView;
 
-import com.example.gegbo.nytimessearch.Article;
-import com.example.gegbo.nytimessearch.ArticleArrayAdapter;
+import com.example.gegbo.nytimessearch.Adapters.ArticleArrayAdapter;
+import com.example.gegbo.nytimessearch.Models.Article;
 import com.example.gegbo.nytimessearch.R;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
@@ -42,9 +47,9 @@ public class SearchActivity extends AppCompatActivity {
     }
 
     public void setUpViews() {
-        etQuery = (EditText) findViewById(R.id.etQuery);
+//        etQuery = (EditText) findViewById(R.id.etQuery);
         gvResults = (GridView) findViewById(R.id.gvResults);
-        btnSearch = (Button) findViewById(R.id.btnSearch);
+//        btnSearch = (Button) findViewById(R.id.btnSearch);
 
         articles = new ArrayList<>();
         adapter = new ArticleArrayAdapter(this,articles);
@@ -67,8 +72,8 @@ public class SearchActivity extends AppCompatActivity {
         });
 
     }
-    public void onArticleSearch(View view) {
-        String query = etQuery.getText().toString();
+    public void onArticleSearch(String query) {
+        //String query = etQuery.getText().toString();
 
         //Toast.makeText(this,"searching for " + query, Toast.LENGTH_LONG).show();
         AsyncHttpClient client = new AsyncHttpClient();
@@ -78,7 +83,7 @@ public class SearchActivity extends AppCompatActivity {
 
         params.put("api-key","3931788f3f054e13b859ae0bbea30f54");
         params.put("page",0);
-        params.put("p",query);
+        params.put("q",query);
 
         client.get(url,params, new JsonHttpResponseHandler() {
             @Override
@@ -98,5 +103,32 @@ public class SearchActivity extends AppCompatActivity {
                 }
             }
         } );
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_search, menu);
+        MenuItem searchItem = menu.findItem(R.id.action_search);
+        final SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                // perform query here
+                onArticleSearch(query);
+
+                // workaround to avoid issues with some emulators and keyboard devices firing twice if a keyboard enter is used
+                // see https://code.google.com/p/android/issues/detail?id=24599
+                searchView.clearFocus();
+
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+        });
+        return super.onCreateOptionsMenu(menu);
     }
 }

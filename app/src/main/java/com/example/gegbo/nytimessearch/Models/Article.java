@@ -1,4 +1,4 @@
-package com.example.gegbo.nytimessearch;
+package com.example.gegbo.nytimessearch.Models;
 
 import org.json.JSONArray;
 import org.json.JSONException;

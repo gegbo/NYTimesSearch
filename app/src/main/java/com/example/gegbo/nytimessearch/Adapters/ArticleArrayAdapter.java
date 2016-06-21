@@ -1,4 +1,4 @@
-package com.example.gegbo.nytimessearch;
+package com.example.gegbo.nytimessearch.Adapters;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -8,6 +8,8 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.gegbo.nytimessearch.Models.Article;
+import com.example.gegbo.nytimessearch.R;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
