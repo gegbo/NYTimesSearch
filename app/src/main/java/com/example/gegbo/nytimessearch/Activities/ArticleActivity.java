@@ -14,6 +14,8 @@ import android.webkit.WebViewClient;
 import com.example.gegbo.nytimessearch.Models.Article;
 import com.example.gegbo.nytimessearch.R;
 
+import org.parceler.Parcels;
+
 public class ArticleActivity extends AppCompatActivity {
 
     private ShareActionProvider miShare;
@@ -22,7 +24,7 @@ public class ArticleActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_article);
 
-        Article article = (Article) getIntent().getSerializableExtra("article");
+        Article article = (Article) Parcels.unwrap(getIntent().getParcelableExtra("article"));
 
         WebView webview = (WebView) findViewById(R.id.wvArticle);
 
