@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -54,29 +55,12 @@ public class SearchActivity extends AppCompatActivity {
     }
 
     public void setUpViews() {
-////        etQuery = (EditText) findViewById(R.id.etQuery);
-//        gvResults = (GridView) findViewById(R.id.gvResults);
-////        btnSearch = (Button) findViewById(R.id.btnSearch);
-//
-//        articles = new ArrayList<>();
-//        adapter = new ArticleArrayAdapter(this,articles);
-//        gvResults.setAdapter(adapter);
-//
-//        //hook up listener for grid click
-//        gvResults.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//
-//            @Override
-//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                //create an intent to display the article
-//                Intent i = new Intent(getApplicationContext(),ArticleActivity.class);
-//                //get the article to display
-//                Article article = articles.get(position);
-//                //pass in that article into intent
-//                i.putExtra("article",article);
-//                //launch the activity
-//                startActivity(i);
-//            }
-//        });
+
+        // Find the toolbar view inside the activity layout
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        // Sets the Toolbar to act as the ActionBar for this Activity window.
+        // Make sure the toolbar exists in the activity and is not null
+        setSupportActionBar(toolbar);
 
         // Lookup the recyclerview in activity layout
         RecyclerView rvArticles = (RecyclerView) findViewById(R.id.rvArticles);
@@ -100,20 +84,6 @@ public class SearchActivity extends AppCompatActivity {
                 loadMoreArticles(page);
             }
         });
-
-//        rvArticles.setOnClickListener(new AdapterView.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                //create an intent to display the article
-//                Intent i = new Intent(getApplicationContext(),ArticleActivity.class);
-//                //get the article to display
-//                Article article = articles.get(position);
-//                //pass in that article into intent
-//                i.putExtra("article",article);
-//                //launch the activity
-//                startActivity(i);
-//            }
-//        });
 
         ItemClickSupport.addTo(rvArticles).setOnItemClickListener(
                 new ItemClickSupport.OnItemClickListener() {
@@ -253,4 +223,5 @@ public class SearchActivity extends AppCompatActivity {
 
         startActivityForResult(intent,SETTINGS_REQUEST_CODE);
     }
+
 }
