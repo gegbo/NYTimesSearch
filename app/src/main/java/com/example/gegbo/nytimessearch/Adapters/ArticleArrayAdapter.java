@@ -66,9 +66,10 @@ public class ArticleArrayAdapter extends RecyclerView.Adapter<ArticleArrayAdapte
         title.setText(article.getHeadline());
 
         ImageView picture = viewHolder.ivImage;
+        article.getThumbnail();
         picture.setImageResource(0);
 
-        if (!article.getThumbnail().isEmpty()) {
+        if (article.getThumbnail() != null && !article.getThumbnail().isEmpty()) {
             Glide.with(mContext).load(article.getThumbnail()).into(picture);
         }
         else {

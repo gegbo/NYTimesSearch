@@ -8,14 +8,10 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.GridView;
 import android.widget.Toast;
 
 import com.example.gegbo.nytimessearch.Adapters.ArticleArrayAdapter;
@@ -40,18 +36,18 @@ public class SearchActivity extends AppCompatActivity {
 
     public static final int SETTINGS_REQUEST_CODE = 5;
 
-    EditText etQuery;
-    GridView gvResults;
-    Button btnSearch;
-
     ArrayList<Article> articles;
     ArticleArrayAdapter adapter;
+    RecyclerView rvArticles;
+    StaggeredGridLayoutManager gridLayoutManager;
+    private boolean isTopArticles = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
         setUpViews();
+        displayTopArticles();
     }
 
     public void setUpViews() {
@@ -63,7 +59,7 @@ public class SearchActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         // Lookup the recyclerview in activity layout
-        RecyclerView rvArticles = (RecyclerView) findViewById(R.id.rvArticles);
+        rvArticles = (RecyclerView) findViewById(R.id.rvArticles);
         // Initialize articles
         articles = new ArrayList<>();
         // Create adapter passing in the sample user data
@@ -71,7 +67,7 @@ public class SearchActivity extends AppCompatActivity {
         // Attach the adapter to the recyclerview to populate items
         rvArticles.setAdapter(adapter);
         // Set layout manager to position the items
-        StaggeredGridLayoutManager gridLayoutManager = new StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.VERTICAL);
+        gridLayoutManager = new StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.VERTICAL);
 
         rvArticles.setLayoutManager(gridLayoutManager);
 
@@ -81,7 +77,11 @@ public class SearchActivity extends AppCompatActivity {
             public void onLoadMore(int page, int totalItemsCount) {
                 // Triggered only when new data needs to be appended to the list
                 // Add whatever code is needed to append new items to the bottom of the list
-                loadMoreArticles(page);
+
+                if(!isTopArticles)
+                {
+                    loadMoreArticles(page);
+                }
             }
         });
 
@@ -108,6 +108,16 @@ public class SearchActivity extends AppCompatActivity {
         // Send an API request to retrieve appropriate data using the offset value as a parameter.
         //  --> Deserialize API response and then construct new objects to append to the adapter
         //  --> Notify the adapter of the changes
+        fetchArticles(page);
+    }
+
+    public void onArticleSearch() {
+        articles.clear();
+        adapter.notifyDataSetChanged();
+        fetchArticles(0);
+    }
+
+    public void fetchArticles(final int page) {
 
         AsyncHttpClient client = new AsyncHttpClient();
         String url = "https://api.nytimes.com/svc/search/v2/articlesearch.json";
@@ -129,10 +139,8 @@ public class SearchActivity extends AppCompatActivity {
 
                 try {
                     articleJsonResults = response.getJSONObject("response").getJSONArray("docs");
-//                    adapter.addAll(Article.fromJSONArray(articleJsonResults));
                     articles.addAll(Article.fromJSONArray(articleJsonResults));
                     adapter.notifyDataSetChanged();
-                    Log.d("DEBUG",articles.toString());
                 }
                 catch (JSONException e) {
                     e.printStackTrace();
@@ -141,18 +149,13 @@ public class SearchActivity extends AppCompatActivity {
         } );
     }
 
-    public void onArticleSearch(String query) {
-        //String query = etQuery.getText().toString();
-
-        //Toast.makeText(this,"searching for " + query, Toast.LENGTH_LONG).show();
+    public void displayTopArticles() {
         AsyncHttpClient client = new AsyncHttpClient();
-        String url = "https://api.nytimes.com/svc/search/v2/articlesearch.json";
+        String url = "https://api.nytimes.com/svc/topstories/v2/home.json";
 
         RequestParams params = new RequestParams();
 
         params.put("api-key","3931788f3f054e13b859ae0bbea30f54");
-        params.put("page",0);
-        params.put("q",query);
 
         client.get(url,params, new JsonHttpResponseHandler() {
             @Override
@@ -160,12 +163,9 @@ public class SearchActivity extends AppCompatActivity {
                 JSONArray articleJsonResults = null;
 
                 try {
-                    articles.clear();
-                    articleJsonResults = response.getJSONObject("response").getJSONArray("docs");
-//                    adapter.addAll(Article.fromJSONArray(articleJsonResults));
+                    articleJsonResults = response.getJSONArray("results");
                     articles.addAll(Article.fromJSONArray(articleJsonResults));
                     adapter.notifyDataSetChanged();
-                    Log.d("DEBUG",articles.toString());
                 }
                 catch (JSONException e) {
                     e.printStackTrace();
@@ -184,8 +184,9 @@ public class SearchActivity extends AppCompatActivity {
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
+                isTopArticles = false;
                 // perform query here
-                onArticleSearch(query);
+                onArticleSearch();
 
                 // workaround to avoid issues with some emulators and keyboard devices firing twice if a keyboard enter is used
                 // see https://code.google.com/p/android/issues/detail?id=24599

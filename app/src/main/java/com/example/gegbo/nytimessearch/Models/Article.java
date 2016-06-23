@@ -16,6 +16,7 @@ public class Article {
     String weburl;
     String headline;
     String thumbnail;
+    Boolean topArticle;
 
     public Article() {
 
@@ -33,24 +34,46 @@ public class Article {
         return thumbnail;
     }
 
-    public Article(JSONObject jsonObject) {
+    public Boolean getTopArticle() {return topArticle;}
+
+    public Article(JSONObject jsonObject)  {
+
         try {
-            weburl = jsonObject.getString("web_url");
-            headline = jsonObject.getJSONObject("headline").getString("main");
+            if(jsonObject.has("web_url")) {
+                topArticle = false;
+                weburl = jsonObject.getString("web_url");
+                headline = jsonObject.getJSONObject("headline").getString("main");
 
-            JSONArray multimedia = jsonObject.getJSONArray("multimedia");
+                JSONArray multimedia = jsonObject.getJSONArray("multimedia");
 
-            if(multimedia.length() > 0) {
-                JSONObject multimediaJson = multimedia.getJSONObject(0);
-                this.thumbnail = "http://www.nytimes.com/"+multimediaJson.getString("url");
+                if(multimedia.length() > 0) {
+                    JSONObject multimediaJson = multimedia.getJSONObject(0);
+                    this.thumbnail = "http://www.nytimes.com/"+multimediaJson.getString("url");
+                }
+                else {
+                    this.thumbnail = "";
+                }
             }
             else {
-                this.thumbnail = "";
+                topArticle = true;
+                weburl = jsonObject.getString("url");
+                headline = jsonObject.getString("title");
+                JSONArray multimedia = jsonObject.getJSONArray("multimedia");
+
+                if(multimedia.length() > 0) {
+                    JSONObject multimediaJson = multimedia.getJSONObject(0);
+                    this.thumbnail = multimediaJson.getString("url");
+                }
+                else {
+                    this.thumbnail = "";
+                }
             }
         }
         catch (JSONException e) {
             e.printStackTrace();
         }
+
+
     }
 
     public static ArrayList<Article> fromJSONArray(JSONArray array) {
