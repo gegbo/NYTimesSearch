@@ -11,7 +11,7 @@
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="@string/begin_date"
         android:id="@+id/tvDate"
-        android:layout_marginTop="150dp" />
+        android:layout_marginTop="140dp" />
 
     <EditText
         android:layout_width="wrap_content"
@@ -42,9 +42,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/spinSort"
         android:layout_marginLeft="100dp"
-        android:layout_marginTop="140dp"
-        android:layout_alignRight="@+id/cbFashion"
-        android:layout_alignEnd="@+id/cbFashion" />
+        android:layout_marginTop="140dp" />
 
     <CheckBox
         android:layout_width="wrap_content"
@@ -52,7 +50,7 @@
         android:text="Arts"
         android:id="@+id/cbArts"
         android:layout_marginLeft="110dp"
-        android:layout_marginTop="220dp"/>
+        android:layout_marginTop="220dp" />
 
     <CheckBox
         android:layout_width="wrap_content"

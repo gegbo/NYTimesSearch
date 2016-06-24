@@ -9,17 +9,18 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
 
 import com.example.gegbo.nytimessearch.Adapters.ArticleArrayAdapter;
 import com.example.gegbo.nytimessearch.EndlessRecyclerViewScrollListener;
 import com.example.gegbo.nytimessearch.Fragments.FilterSettingsFragment;
 import com.example.gegbo.nytimessearch.ItemClickSupport;
 import com.example.gegbo.nytimessearch.Models.Article;
+import com.example.gegbo.nytimessearch.Models.Filter;
 import com.example.gegbo.nytimessearch.R;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
@@ -34,23 +35,21 @@ import java.util.ArrayList;
 
 import cz.msebera.android.httpclient.Header;
 
-public class SearchActivity extends AppCompatActivity {
-
-    public static final int SETTINGS_REQUEST_CODE = 5;
+public class SearchActivity extends AppCompatActivity implements FilterSettingsFragment.FragmentSettingsListener {
 
     ArrayList<Article> articles;
     ArticleArrayAdapter adapter;
     RecyclerView rvArticles;
     StaggeredGridLayoutManager gridLayoutManager;
     private boolean isTopArticles = true;
+    Filter filter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
-        //setUpViews();
-        //displayTopArticles();
-        showEditDialog();
+        setUpViews();
+        displayTopArticles();
     }
 
     public void setUpViews() {
@@ -115,7 +114,9 @@ public class SearchActivity extends AppCompatActivity {
     }
 
     public void onArticleSearch() {
-        articles.clear();
+        if(!articles.isEmpty()) {
+            articles.clear();
+        }
         adapter.notifyDataSetChanged();
         fetchArticles(0);
     }
@@ -129,11 +130,15 @@ public class SearchActivity extends AppCompatActivity {
 
         RequestParams params = new RequestParams();
 
-        params.put("api-key","3931788f3f054e13b859ae0bbea30f54");
-        params.put("page",page);
-        if (searchView != null) {
-            params.put("q",searchView.getQuery());
+        if(filter != null) {
+            params.put("fq",filter.getNewsDeskParams());
+            params.put("begin_date",filter.getBeginDate());
+            params.put("sort",filter.getSort());
         }
+        params.put("page",page);
+        params.put("api-key","3931788f3f054e13b859ae0bbea30f54");
+
+
 
         client.get(url,params, new JsonHttpResponseHandler() {
             @Override
@@ -211,23 +216,27 @@ public class SearchActivity extends AppCompatActivity {
 
         switch (item.getItemId()) {
             case R.id.filter:
-                Toast.makeText(this,"Clicked on settings button!",Toast.LENGTH_LONG).show();
-                launchSettingsActivity();
+                showEditDialog();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
 
-    private void launchSettingsActivity() {
-
-    }
-
     private void showEditDialog() {
         FragmentManager fm = getSupportFragmentManager();
         FilterSettingsFragment editNameDialogFragment = FilterSettingsFragment.newInstance();
+        Bundle bundle = new Bundle();
+        bundle.putParcelable("filter",Parcels.wrap(filter));
+        editNameDialogFragment.setArguments(bundle);
         editNameDialogFragment.show(fm,"fragment_edit_name");
     }
 
 
+    @Override
+    public void onSetFilter(Filter f) {
+        filter = f;
+        Log.d("dateFilter",filter.getBeginDate());
+        onArticleSearch();
+    }
 }

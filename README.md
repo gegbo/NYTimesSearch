@@ -36,6 +36,7 @@ The following **optional** features are implemented:
 The following **additional** features are implemented:
 
 * [ ] Toolbar fades as I start scrolling down
+* [ ] Utilize a multiple choice spinner 
 
 ## Video Walkthrough
 
