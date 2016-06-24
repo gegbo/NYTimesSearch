@@ -11,7 +11,7 @@
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="@string/begin_date"
         android:id="@+id/tvDate"
-        android:layout_marginTop="140dp" />
+        android:layout_marginTop="50dp" />
 
     <EditText
         android:layout_width="wrap_content"
@@ -27,7 +27,7 @@
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="@string/sort_order"
         android:id="@+id/textView"
-        android:layout_marginTop="50dp" />
+        android:layout_marginTop="140dp" />
 
     <TextView
         android:layout_width="wrap_content"

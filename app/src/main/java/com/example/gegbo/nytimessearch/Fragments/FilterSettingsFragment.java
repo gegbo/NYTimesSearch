@@ -17,6 +17,8 @@ import android.widget.Spinner;
 import com.example.gegbo.nytimessearch.Models.Filter;
 import com.example.gegbo.nytimessearch.R;
 
+import org.parceler.Parcels;
+
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
@@ -31,6 +33,8 @@ public class FilterSettingsFragment extends DialogFragment implements DatePicker
     private CheckBox cbFashion;
     private CheckBox cbSports;
     private Spinner spinSort;
+
+    ArrayAdapter<CharSequence> adapter; //adapter for spinner
 
     Filter filter;
     public FilterSettingsFragment() {
@@ -59,15 +63,6 @@ public class FilterSettingsFragment extends DialogFragment implements DatePicker
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         getDialog().setTitle("Filter Settings");
-
-        Bundle bundle = this.getArguments(); //need to work on updating filter after already set (from activity)
-        if (bundle != null) {
-            filter = bundle.getParcelable("filter");
-        }
-        else
-        {
-            filter = new Filter();
-        }
 
         editText = (EditText) view.findViewById(R.id.etBeginDate);
         editText.setOnClickListener(new View.OnClickListener() {
@@ -115,11 +110,22 @@ public class FilterSettingsFragment extends DialogFragment implements DatePicker
 
         spinSort = (Spinner) view.findViewById(R.id.spinSort);
         // Create an ArrayAdapter using the string array and a default spinner layout
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getContext(),
+        adapter = ArrayAdapter.createFromResource(getContext(),
                 R.array.sort_array, android.R.layout.simple_spinner_item);
         // Specify the layout to use when the list of choices appears
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinSort.setAdapter(adapter);
+
+        Bundle bundle = this.getArguments(); //need to work on updating filter after already set (from activity)
+
+        if(bundle.getParcelable("filter") != null && bundle != null)
+        {
+            filter = Parcels.unwrap(bundle.getParcelable("filter"));
+            applySettings();
+        }
+        else {
+            filter = new Filter();
+        }
 
     }
 
@@ -177,4 +183,18 @@ public class FilterSettingsFragment extends DialogFragment implements DatePicker
         }
     }
 
+
+    public void applySettings() {
+
+        //set the date with current date filter
+        String formattedDate = filter.getBeginDate().substring(4,6)+"/"+filter.getBeginDate().substring(6,8)+"/"+filter.getBeginDate().substring(0,4);
+        editText.setText(formattedDate);
+
+        int spinnerPosition = adapter.getPosition(filter.getSort());
+        spinSort.setSelection(spinnerPosition);
+
+        cbArts.setChecked(filter.getNewsDesk().get("Arts"));
+        cbSports.setChecked(filter.getNewsDesk().get("Sports"));
+        cbFashion.setChecked(filter.getNewsDesk().get("Fashion"));
+    }
 }

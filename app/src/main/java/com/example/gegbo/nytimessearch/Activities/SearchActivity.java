@@ -14,6 +14,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import com.example.gegbo.nytimessearch.Adapters.ArticleArrayAdapter;
 import com.example.gegbo.nytimessearch.EndlessRecyclerViewScrollListener;
@@ -50,6 +51,7 @@ public class SearchActivity extends AppCompatActivity implements FilterSettingsF
         setContentView(R.layout.activity_search);
         setUpViews();
         displayTopArticles();
+        //showEditDialog();
     }
 
     public void setUpViews() {
@@ -237,6 +239,7 @@ public class SearchActivity extends AppCompatActivity implements FilterSettingsF
     public void onSetFilter(Filter f) {
         filter = f;
         Log.d("dateFilter",filter.getBeginDate());
-        onArticleSearch();
+        Toast.makeText(this,"Filter has been set!",Toast.LENGTH_SHORT).show();
+        //onArticleSearch();
     }
 }
