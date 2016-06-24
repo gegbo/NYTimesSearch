@@ -2,6 +2,7 @@ package com.example.gegbo.nytimessearch.Activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
@@ -16,6 +17,7 @@ import android.widget.Toast;
 
 import com.example.gegbo.nytimessearch.Adapters.ArticleArrayAdapter;
 import com.example.gegbo.nytimessearch.EndlessRecyclerViewScrollListener;
+import com.example.gegbo.nytimessearch.Fragments.FilterSettingsFragment;
 import com.example.gegbo.nytimessearch.ItemClickSupport;
 import com.example.gegbo.nytimessearch.Models.Article;
 import com.example.gegbo.nytimessearch.R;
@@ -46,8 +48,9 @@ public class SearchActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
-        setUpViews();
-        displayTopArticles();
+        //setUpViews();
+        //displayTopArticles();
+        showEditDialog();
     }
 
     public void setUpViews() {
@@ -217,12 +220,14 @@ public class SearchActivity extends AppCompatActivity {
     }
 
     private void launchSettingsActivity() {
-        Intent intent = new Intent(this, FilterActivity.class);
 
-        //pass in the previous age
-        //intent.putExtra("user",user);
-
-        startActivityForResult(intent,SETTINGS_REQUEST_CODE);
     }
+
+    private void showEditDialog() {
+        FragmentManager fm = getSupportFragmentManager();
+        FilterSettingsFragment editNameDialogFragment = FilterSettingsFragment.newInstance();
+        editNameDialogFragment.show(fm,"fragment_edit_name");
+    }
+
 
 }
