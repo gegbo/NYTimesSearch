@@ -1,5 +1,7 @@
 package com.example.gegbo.nytimessearch.Models;
 
+import android.util.Log;
+
 import org.parceler.Parcel;
 
 import java.util.ArrayList;
@@ -66,6 +68,7 @@ public class Filter {
         }
 
         String newsDeskParams = android.text.TextUtils.join(" ",validNews);
+        Log.d("NewsDeskParams",String.format("news_desk:(%s)",newsDeskParams));
         return String.format("news_desk:(%s)",newsDeskParams);
     }
 }

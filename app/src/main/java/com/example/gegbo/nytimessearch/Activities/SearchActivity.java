@@ -116,9 +116,7 @@ public class SearchActivity extends AppCompatActivity implements FilterSettingsF
     }
 
     public void onArticleSearch() {
-        if(!articles.isEmpty()) {
-            articles.clear();
-        }
+        articles.clear();
         adapter.notifyDataSetChanged();
         fetchArticles(0);
     }
@@ -132,13 +130,14 @@ public class SearchActivity extends AppCompatActivity implements FilterSettingsF
 
         RequestParams params = new RequestParams();
 
+        params.put("q",searchView.getQuery());
         if(filter != null) {
-            params.put("fq",filter.getNewsDeskParams());
+            params.put("fq","news_desk:(\"Sports\")"); //Why isn't this working!!?
             params.put("begin_date",filter.getBeginDate());
             params.put("sort",filter.getSort());
         }
         params.put("page",page);
-        params.put("api-key","3931788f3f054e13b859ae0bbea30f54");
+        params.put("api-key","8bf8d85b59c44f64b56aadd0e9958a0b");
 
 
 
@@ -240,6 +239,6 @@ public class SearchActivity extends AppCompatActivity implements FilterSettingsF
         filter = f;
         Log.d("dateFilter",filter.getBeginDate());
         Toast.makeText(this,"Filter has been set!",Toast.LENGTH_SHORT).show();
-        //onArticleSearch();
+        onArticleSearch();
     }
 }
