@@ -20,6 +20,7 @@ import com.example.gegbo.nytimessearch.R;
 import org.parceler.Parcels;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 
 /**
@@ -33,6 +34,7 @@ public class FilterSettingsFragment extends DialogFragment implements DatePicker
     private CheckBox cbFashion;
     private CheckBox cbSports;
     private Spinner spinSort;
+    MultiSelectSpinner mySpin;
 
     ArrayAdapter<CharSequence> adapter; //adapter for spinner
 
@@ -61,6 +63,7 @@ public class FilterSettingsFragment extends DialogFragment implements DatePicker
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+
         super.onViewCreated(view, savedInstanceState);
         getDialog().setTitle("Filter Settings");
 
@@ -84,29 +87,29 @@ public class FilterSettingsFragment extends DialogFragment implements DatePicker
             }
         });
 
-        cbArts = (CheckBox) view.findViewById(R.id.cbArts);
-        cbArts.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onCheckboxClicked(cbArts);
-            }
-        });
-
-        cbFashion = (CheckBox) view.findViewById(R.id.cbFashion);
-        cbFashion.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onCheckboxClicked(cbFashion);
-            }
-        });
-
-        cbSports = (CheckBox) view.findViewById(R.id.cbSports);
-        cbSports.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onCheckboxClicked(cbSports);
-            }
-        });
+//        cbArts = (CheckBox) view.findViewById(R.id.cbArts);
+//        cbArts.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                onCheckboxClicked(cbArts);
+//            }
+//        });
+//
+//        cbFashion = (CheckBox) view.findViewById(R.id.cbFashion);
+//        cbFashion.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                onCheckboxClicked(cbFashion);
+//            }
+//        });
+//
+//        cbSports = (CheckBox) view.findViewById(R.id.cbSports);
+//        cbSports.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                onCheckboxClicked(cbSports);
+//            }
+//        });
 
         spinSort = (Spinner) view.findViewById(R.id.spinSort);
         // Create an ArrayAdapter using the string array and a default spinner layout
@@ -115,6 +118,11 @@ public class FilterSettingsFragment extends DialogFragment implements DatePicker
         // Specify the layout to use when the list of choices appears
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinSort.setAdapter(adapter);
+
+        String[] strings = { "Arts","Automobiles","Blogs","Books","Business","Cars","Classifieds","Dining","Education","Fashion & Style","Food","Health","Movies","Museums","Opinion","Politics","Sports","Technology","Travel","Women"};
+
+        mySpin = (MultiSelectSpinner)view.findViewById(R.id.spinValues);
+        mySpin.setItems(strings);
 
         Bundle bundle = this.getArguments(); //need to work on updating filter after already set (from activity)
 
@@ -153,35 +161,35 @@ public class FilterSettingsFragment extends DialogFragment implements DatePicker
         filter.setBeginDate(format.format(c.getTime()));
     }
 
-    public void onCheckboxClicked(CheckBox cb) {
-        // Is the view now checked?
-        boolean checked = cb.isChecked();
-
-        // Check which checkbox was clicked
-        switch(cb.getId()) {
-            case R.id.cbArts:
-                if (checked) {
-                    filter.getNewsDesk().put("Arts",true);
-                }
-                else
-                    filter.getNewsDesk().put("Arts",false);
-                break;
-            case R.id.cbFashion:
-                if (checked) {
-                    filter.getNewsDesk().put("Fashion",true);
-                }
-                else
-                    filter.getNewsDesk().put("Fashion",false);
-                break;
-            case R.id.cbSports:
-                if (checked) {
-                    filter.getNewsDesk().put("Sports",true);
-                }
-                else
-                    filter.getNewsDesk().put("Sports",false);
-                break;
-        }
-    }
+//    public void onCheckboxClicked(CheckBox cb) {
+//        // Is the view now checked?
+//        boolean checked = cb.isChecked();
+//
+//        // Check which checkbox was clicked
+//        switch(cb.getId()) {
+//            case R.id.cbArts:
+//                if (checked) {
+//                    filter.getNewsDesk().put("Arts",true);
+//                }
+//                else
+//                    filter.getNewsDesk().put("Arts",false);
+//                break;
+//            case R.id.cbFashion:
+//                if (checked) {
+//                    filter.getNewsDesk().put("Fashion",true);
+//                }
+//                else
+//                    filter.getNewsDesk().put("Fashion",false);
+//                break;
+//            case R.id.cbSports:
+//                if (checked) {
+//                    filter.getNewsDesk().put("Sports",true);
+//                }
+//                else
+//                    filter.getNewsDesk().put("Sports",false);
+//                break;
+//        }
+//    }
 
 
     public void applySettings() {
@@ -193,8 +201,13 @@ public class FilterSettingsFragment extends DialogFragment implements DatePicker
         int spinnerPosition = adapter.getPosition(filter.getSort());
         spinSort.setSelection(spinnerPosition);
 
-        cbArts.setChecked(filter.getNewsDesk().get("Arts"));
-        cbSports.setChecked(filter.getNewsDesk().get("Sports"));
-        cbFashion.setChecked(filter.getNewsDesk().get("Fashion"));
+        ArrayList<String> values = new ArrayList<>(1);
+        values.add("Sports");
+        mySpin.setSelection(values);
+        mySpin.buildSelectedItemString();
+        mySpin._proxyAdapter.add(mySpin.buildSelectedItemString());
+//        cbArts.setChecked(filter.getNewsDesk().get("Arts"));
+//        cbSports.setChecked(filter.getNewsDesk().get("Sports"));
+//        cbFashion.setChecked(filter.getNewsDesk().get("Fashion"));
     }
 }

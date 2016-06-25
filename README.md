@@ -34,15 +34,15 @@ The following **optional** features are implemented:
 * [X] Leverage the popular [GSON library](http://guides.codepath.com/android/Using-Android-Async-Http-Client#decoding-with-gson-library) to streamline the parsing of JSON data and avoid manual parsing.
 
 The following **additional** features are implemented:
-
-* [ ] Toolbar fades as I start scrolling down
-* [ ] Utilize a multiple choice spinner
+* [X] Added a custom icon launcher
+* [X] Utilize a multiple choice spinner
+* [ ] Toolbar fades out as I start scrolling down
 
 ## Video Walkthrough
 
 Here's a walkthrough of implemented user stories:
 
-<img src='http://i.imgur.com/OUpTOMr.gif' title='Video Walkthrough' width='' alt='Video Walkthrough' />
+<img src='http://i.imgur.com/IiULybB.gif' title='Video Walkthrough' width='' alt='Video Walkthrough' />
 
 GIF created with [LiceCap](http://www.cockos.com/licecap/).
 

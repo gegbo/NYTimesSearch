@@ -138,7 +138,7 @@ public class SearchActivity extends AppCompatActivity implements FilterSettingsF
 
         params.put("q",searchView.getQuery());
         if(filter != null) {
-            //params.put("fq",filter.getNewsDeskParams());
+            params.put("fq","news_desk:(\"Sports\")");
             params.put("begin_date",filter.getBeginDate());
             params.put("sort",filter.getSort());
         }
