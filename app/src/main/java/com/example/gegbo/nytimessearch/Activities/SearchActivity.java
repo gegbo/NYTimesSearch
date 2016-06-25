@@ -44,6 +44,7 @@ public class SearchActivity extends AppCompatActivity implements FilterSettingsF
     StaggeredGridLayoutManager gridLayoutManager;
     private boolean isTopArticles = true;
     Filter filter;
+    Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,10 +58,15 @@ public class SearchActivity extends AppCompatActivity implements FilterSettingsF
     public void setUpViews() {
 
         // Find the toolbar view inside the activity layout
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
         // Sets the Toolbar to act as the ActionBar for this Activity window.
         // Make sure the toolbar exists in the activity and is not null
+
+        toolbar.setTitle("Top Stories");
+
         setSupportActionBar(toolbar);
+        getSupportActionBar().setLogo(R.drawable.shortlogo);
+        getSupportActionBar().setDisplayUseLogoEnabled(true);
 
         // Lookup the recyclerview in activity layout
         rvArticles = (RecyclerView) findViewById(R.id.rvArticles);
@@ -132,7 +138,7 @@ public class SearchActivity extends AppCompatActivity implements FilterSettingsF
 
         params.put("q",searchView.getQuery());
         if(filter != null) {
-            //params.put("fq","news_desk:(\"Sports\")"); //Why isn't this working!!?
+            //params.put("fq",filter.getNewsDeskParams());
             params.put("begin_date",filter.getBeginDate());
             params.put("sort",filter.getSort());
         }
@@ -155,6 +161,11 @@ public class SearchActivity extends AppCompatActivity implements FilterSettingsF
                     e.printStackTrace();
                 }
             }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                super.onFailure(statusCode, headers, throwable, errorResponse);
+            }
         } );
     }
 
@@ -164,7 +175,7 @@ public class SearchActivity extends AppCompatActivity implements FilterSettingsF
 
         RequestParams params = new RequestParams();
 
-        params.put("api-key","3931788f3f054e13b859ae0bbea30f54");
+        params.put("api-key","8bf8d85b59c44f64b56aadd0e9958a0b");
 
         client.get(url,params, new JsonHttpResponseHandler() {
             @Override
@@ -179,6 +190,11 @@ public class SearchActivity extends AppCompatActivity implements FilterSettingsF
                 catch (JSONException e) {
                     e.printStackTrace();
                 }
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                super.onFailure(statusCode, headers, throwable, errorResponse);
             }
         } );
     }
@@ -197,6 +213,7 @@ public class SearchActivity extends AppCompatActivity implements FilterSettingsF
                 // perform query here
                 onArticleSearch();
 
+                toolbar.setTitle("Article Search");
                 // workaround to avoid issues with some emulators and keyboard devices firing twice if a keyboard enter is used
                 // see https://code.google.com/p/android/issues/detail?id=24599
                 searchView.clearFocus();

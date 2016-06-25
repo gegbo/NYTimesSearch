@@ -18,7 +18,6 @@
             </intent-filter>
         </activity>
         <activity android:name=".Activities.ArticleActivity" />
-        <activity android:name=".Activities.FilterActivity" />
     </application>
 
 </manifest>
